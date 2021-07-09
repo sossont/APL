@@ -6,7 +6,7 @@ import numpy as np
 rc('font', family='AppleGothic')
 plt.rcParams['axes.unicode_minus'] = False  #plot에서 한글 깨지는걸 해결.
 
-data = pd.read_csv("ts_data_accident-2020.csv", low_memory=False)
+data = pd.read_csv("../ts_data_accident-2020.csv", low_memory=False)
 pd.set_option('display.max_columns',None)   # columns 항목이 굉장히 길어도 생략안하고 끝까지 출력하게 해주는 코드.
 """
 data['TW_ATT_IP'].describe()

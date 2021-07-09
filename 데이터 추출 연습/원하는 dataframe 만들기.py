@@ -28,3 +28,21 @@ for i in range(0,data_size):
 new_df = risk_df[['ASSETS_VAL_6','ASSETS_VAL_7','ASSETS_VAL_8','ASSETS_VAL_9','ASSETS_VAL_10']]
 new_df = pd.concat([data['TW_DMG_PORT'].head(data_size),new_df],axis=1) # 이건 열 합쳐주기. axis = 1 이면 열 합치는 것.
 print(new_df.describe())
+
+# 포트번호당 공격 횟수
+
+portnum = {}
+
+for port in data['TW_DMG_PORT'] :   # 포트 번호당 공격횟수를 나타내는 딕셔너리.
+    portfind = False
+    port = str(port)
+    for num in portnum.keys():
+        if port == num:
+            portnum[port] += 1
+            portfind = True
+
+    if not portfind:
+        portnum[port] = 1
+
+port_df = pd.DataFrame(portnum,index=['Count'])
+print(port_df.sort_values(ascending = False, by = 'Count', axis=1).to_markdown())
