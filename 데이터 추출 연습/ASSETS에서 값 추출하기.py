@@ -6,7 +6,7 @@ import json
 import re
 from pandas import json_normalize
 
-data = pd.read_csv("ts_data_accident-2020.csv", low_memory=False)
+data = pd.read_csv("../ts_data_accident-2020.csv", low_memory=False)
 twdmgport = data['TW_DMG_PORT']
 
 val6list = []
