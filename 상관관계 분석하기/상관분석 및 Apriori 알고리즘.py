@@ -5,7 +5,7 @@ from mlxtend.frequent_patterns import association_rules
 import json
 from pandas import json_normalize
 
-data = pd.read_csv("ts_data_accident-2020.csv", low_memory=False)
+data = pd.read_csv("../ts_data_accident-2020.csv", low_memory=False)
 pd.set_option('display.max_columns',None)
 
 # 정확한 방법인지는 확인이 안되지만, 먼저 dataframe을 만들어서 하나를 추가해놓고 계속 추가하는 방식.
