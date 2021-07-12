@@ -27,8 +27,9 @@ new_df = pd.concat([data['TW_DMG_PORT'].head(data_size),new_df],axis=1) # 이건
 
 dataset = []
 port80_df = new_df.groupby('TW_DMG_PORT').get_group(80) # TW_DMG_PORT = 80 인 데이터들.
-port80_df.drop(['TW_DMG_PORT'], axis = 1)# Port80인거 아니까 이 열 필요없음.
+port80_df = port80_df.drop(['TW_DMG_PORT'], axis = 1)# Port80인거 아니까 이 열 필요없음.
 clist = port80_df.columns.values.tolist()   # 그 데이터들의 columne들.
+
 for i in range(0,200):
     str_list = []
     val = port80_df.iloc[i]
@@ -39,9 +40,10 @@ for i in range(0,200):
 
 # 수작업으로 데이터셋 만들기..
 te = TransactionEncoder()
-te_result = te.fit(dataset).transform(dataset)  # 데이터셋들을 true false로 분석.
+te_result = te.fit(dataset).transform(dataset)
 df = pd.DataFrame(te_result, columns=te.columns_) #위에서 나온걸 데이터프레임으로 변경
-frequent_itemsets = apriori(df, min_support=0.5, use_colnames=True) # apriori 적용.
-association_rules(frequent_itemsets, metric="confidence", min_threshold=0.3) # 이걸 다시 상관 분석으로.
+frequent_itemsets = apriori(df, min_support=0.5, use_colnames=True)
+aroutput = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.3) # 이걸 다시 상관 분석으로.
+print(aroutput.to_markdown())
 
 ## a priori 적용 과정.
