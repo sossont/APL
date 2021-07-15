@@ -3,7 +3,7 @@
 
 출력값
 
-|     | antecedents                                                                                  | consequents                                                                                  |   antecedent support |   consequent support |   support |   confidence |     lift |   leverage |   conviction |
+|     | antecedents(조건절)                                                                                  | consequents(결과절)                                                                                 |   antecedent support |   consequent support |   support |   confidence |     lift |   leverage |   conviction |
 |----:|:---------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------|---------------------:|---------------------:|----------:|-------------:|---------:|-----------:|-------------:|
 |   0 | frozenset({'ASSETS_VAL_6 : 0'})                                                              | frozenset({'ASSETS_VAL_10 : 0'})                                                             |                1     |                0.89  |     0.89  |     0.89     | 1        |   0        |     1        |
 |   1 | frozenset({'ASSETS_VAL_10 : 0'})                                                             | frozenset({'ASSETS_VAL_6 : 0'})                                                              |                0.89  |                1     |     0.89  |     1        | 1        |   0        |   inf        |
