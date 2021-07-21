@@ -5,6 +5,7 @@ Association Rule을 돌리기 전에 전처리 한 번, 후처리 한 번을 한
 전처리 : 0인 값들을 무시한 데이터 셋을 추출하는데, 만약 데이터셋의 길이가 1이라면, 포트 번호만 들어온 것이 되므로, 그것도 무시해준다.
 왜냐하면 포트번호만 들어가 있는 데이터셋은 support값에 혼란을 야기할 뿐, 의미 있는 데이터가 되지 못한다.
 
+
 후처리 : 우리는 포트번호와 자산의 상관관계를 알고 싶기 때문에, 조건절에 포트번호가 오지 않는다면 그 값들은 다 무시한다.
 왜냐하면 알고리즘 상 포트번호 말고 자산끼리의 상관관계도 분석을 하기 때문. 하지만 이 데이터들은 무시해준다.
 
@@ -23,7 +24,7 @@ pd.set_option('display.max_columns',None)   # columns 항목이 굉장히 길어
 
 MAX_size = len(data) # 원하는 데이터 사이즈. 최댓값은 len(data)로 해야 한다.
 
-# =======================   TW_DMG_PORT랑 ASSETS_VAL_6~10 만 뽑아서 데이터프레임으로 재가공하는 함수.
+# =======================   TW_DMG_PORT랑 ASSETS_VAL_6~10 만 뽑아서 데이터프레임으로 재가공하는 함수. ===============================
 # 정확한 방법인지는 확인이 안되지만, 먼저 dataframe을 만들어서 하나를 추가해놓고 계속 추가하는 방식.
 def makedataframe(data_len):
     risk_df = pd.DataFrame()
@@ -38,7 +39,7 @@ def makedataframe(data_len):
     #  지금은 안쓸건데, risk_df = risk_df.reindex(sorted(risk_df.columns),axis=1)   # 보기 편하게, columns name을 정렬한다.
     return rtr_df   # 어차피 가공한 데이터프레임인 new_df만 사용할 거니까 이걸 반환값으로 하면 간편하겠지?
 
-# ======================= 데이터프레임을 상관관계분석을 위한 DataSet으로 만들어주는 함수.
+# ======================= 데이터프레임을 상관관계분석을 위한 DataSet으로 만들어주는 함수. =================================
 def makedataset(data_size): # 함수화 해서 간편하게 하자. range: 0부터 몇 번째 범위까지 데이터셋을 만들것인지 정해주자.
     new_df = makedataframe(data_size)
     column_list = new_df.columns.values.tolist()  # 그 데이터들의 columne들. TW_DMG_PORT, ASSETS_VAL_6~10.
@@ -62,7 +63,7 @@ def makedataset(data_size): # 함수화 해서 간편하게 하자. range: 0부�
         ret_dataSet.append(str_list)
     return ret_dataSet
 
-
+# =============================== 상관관계 분석 적용 ============================
 dataset = makedataset(MAX_size)
 te = TransactionEncoder()
 te_result = te.fit(dataset).transform(dataset)
@@ -81,4 +82,5 @@ for i in range(0,len(assorule_df)):
     real_df = pd.concat([real_df, temp_df], ignore_index = True)
 
 real_df = real_df.sort_values('support', ascending=False)   # 보기 편하게 support 기준으로 내림차순 정렬. 큰것부터 보는게 의미 있다.
+real_df = real_df.rest_index(drop=True) # 정렬 후 인덱스 초기화.
 print(real_df.to_markdown())
