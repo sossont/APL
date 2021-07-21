@@ -66,19 +66,19 @@ def makedataset(data_size): # 함수화 해서 간편하게 하자. range: 0부�
 dataset = makedataset(MAX_size)
 te = TransactionEncoder()
 te_result = te.fit(dataset).transform(dataset)
-df = pd.DataFrame(te_result, columns=te.columns_)  # 위에서 나온걸 데이터프레임으로 변경
+df = pd.DataFrame(te_result, columns=te.columns_) #위에서 나온걸 데이터프레임으로 변경
 frequent_itemsets = apriori(df, min_support=0.00001, use_colnames=True)
-assorule_df = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.00001)  # 이걸 다시 상관 분석으로.
-
-# ======= Association_Rules로 나온 data값들(형식은 series)를 포트번호만 따지기위해 재가공 후 분석해준다.
+assorule_df = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.00001) # 이걸 다시 상관 분석으로.
 real_df = pd.DataFrame()
-for i in range(0, len(assorule_df)):
+for i in range(0,len(assorule_df)):
     temp_df = assorule_df.iloc[i]
     check_list = list(temp_df['antecedents'])
-    check_list = sorted(check_list, reverse=True)
-    if check_list[0].find('TW_DMG_PORT') == -1:  # 못찾으면.
+    check_list = sorted(check_list,reverse=True)
+    if check_list[0].find('TW_DMG_PORT') == -1: # 못찾으면.
         continue
     temp_df = pd.DataFrame(temp_df).T
-    real_df = pd.concat([real_df, temp_df], ignore_index=True)
+    temp_df = temp_df.drop(['antecedent support','consequent support'],axis = 1)    # 보기 편하게 조건절, 결과절 support 삭제. 우리한테는 필요없는 값.
+    real_df = pd.concat([real_df, temp_df], ignore_index = True)
 
-print(real_df)
+real_df = real_df.sort_values('support', ascending=False)   # 보기 편하게 support 기준으로 내림차순 정렬. 큰것부터 보는게 의미 있다.
+print(real_df.to_markdown())
