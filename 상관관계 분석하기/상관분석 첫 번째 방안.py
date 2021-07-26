@@ -82,5 +82,8 @@ for i in range(0,len(assorule_df)):
     real_df = pd.concat([real_df, temp_df], ignore_index = True)
 
 real_df = real_df.sort_values('support', ascending=False)   # 보기 편하게 support 기준으로 내림차순 정렬. 큰것부터 보는게 의미 있다.
-real_df = real_df.rest_index(drop=True) # 정렬 후 인덱스 초기화.
-print(real_df.to_markdown())
+real_df = real_df.reset_index(drop=True) # 정렬 후 인덱스 초기화.
+real_df["antecedents"] = real_df["antecedents"].apply(lambda x: ', '.join(list(x))).astype("unicode")   #frozenset to string
+real_df["consequents"] = real_df["consequents"].apply(lambda x: ', '.join(list(x))).astype("unicode")
+
+real_df     # 최종 데이터녀석.
