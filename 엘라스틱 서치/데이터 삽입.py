@@ -17,5 +17,4 @@ data = [    # 삽입할 데이터. 예시로 조건절, 결과절, support 3값�
     }
     for x in zip(real_df['antecedents'],real_df['consequents'],real_df['support'],real_df.index)
 ]
-
 helpers.bulk(es, data)
