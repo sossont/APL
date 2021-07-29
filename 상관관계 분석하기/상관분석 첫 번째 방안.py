@@ -54,8 +54,7 @@ def makedataset(data_size): # 함수화 해서 간편하게 하자. range: 0부�
             if data_val == 0:   # 0이면 데이터셋에 추가하지 말자.
                 continue
             new_str = data_name + " : " + str(data_val)
-            new_dict = {data_name : data_val}
-            str_list.append(new_dict)
+            str_list.append(new_str)
 
         if len(str_list) <= 1:  # 1이면 포트번호밖에 없는 거다. 포트번호밖에 없는 데이터셋은 의미도 없고 support값에 혼란을 주기 때문에 걸러줘야함.
             continue

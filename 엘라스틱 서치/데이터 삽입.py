@@ -10,6 +10,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 es = Elasticsearch('localhost:9200')
 es.info()
+
 ndict = real_df.to_dict('records') # 딕셔너리로 만들어준다.
 for i in range(0,len(real_df)):
     docs = {
