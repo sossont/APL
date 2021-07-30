@@ -12,6 +12,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 
 data = pd.read_csv("ts_data_accident-2020.csv", low_memory=False)
+data['ACCD_ACCEPT_DT'] = data['ACCD_ACCEPT_DT'].str.replace(' ', 'T') #ISO8601식으로 저장하기 위해 공백을 T로 바꿔줌.
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 MAX_size = len(data) # 원하는 데이터 사이즈. 최댓값은 len(data)로 해야 한다.
 
@@ -87,18 +88,3 @@ real_df = real_df.sort_values('support', ascending=False)
 real_df = real_df.reset_index(drop=True) # 정렬 후 인덱스 초기화.
 real_df["antecedents"] = real_df["antecedents"].apply(lambda x: ', '.join(list(x))).astype("unicode")  #frozenset to string
 real_df["consequents"] = real_df["consequents"].apply(lambda x: ', '.join(list(x))).astype("unicode")
-
-# ======= 엘라스틱서치에 데이터 삽입하는 구간. 먼저 결과 값 데이터.
-es = Elasticsearch('localhost:9200')
-es.info()
-ndict = real_df.to_dict('records')  # 딕셔너리로 만들어준다.
-for i in range(0, len(real_df)):
-    docs = {
-        'antecedents': ndict[i]['antecedents'],
-        'consequents': ndict[i]['consequents'],
-        'support': round(ndict[i]['support'], 7),
-        'confidence': round(ndict[i]['confidence'], 7),
-        'leverage': round(ndict[i]['leverage'], 7),
-        'lift': round(ndict[i]['lift'], 7)
-    }
-    res = es.index(index='as_rule', doc_type="result", body=docs)
