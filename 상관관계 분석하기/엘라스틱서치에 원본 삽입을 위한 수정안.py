@@ -3,17 +3,18 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 import numpy as np
 import json
-from elasticsearch import Elasticsearch
-from elasticsearch import helpers
 from pandas import json_normalize
 from dataprep.eda import plot, plot_correlation, plot_missing
 from mlxtend.preprocessing import TransactionEncoder        # apriori 사용하려고 추가하는 모듈들.
 from mlxtend.frequent_patterns import apriori
 from mlxtend.frequent_patterns import association_rules
+from elasticsearch import Elasticsearch
+from elasticsearch import helpers
 
 data = pd.read_csv("ts_data_accident-2020.csv", low_memory=False)
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 MAX_size = len(data) # 원하는 데이터 사이즈. 최댓값은 len(data)로 해야 한다.
+
 
 def makedataframe(data_len):
     risk_df = pd.DataFrame()
@@ -31,17 +32,20 @@ def makedataframe(data_len):
 
 
 # ======================= 데이터프레임을 상관관계분석을 위한 DataSet으로 만들어주는 함수. =================================
-def makedataset(data_size, new_df):  # 함수화 해서 간편하게 하자. range: 0부터 몇 번째 범위까지 데이터셋을 만들것인지 정해주자.
+def makedataset(data_size):  # 함수화 해서 간편하게 하자. range: 0부터 몇 번째 범위까지 데이터셋을 만들것인지 정해주자.
+    new_df = makedataframe(data_size)
     column_list = new_df.columns.values.tolist()  # 그 데이터들의 columne들. TW_DMG_PORT, ASSETS_VAL_6~10.
     ret_dataSet = []
     # ==== 엘라스틱 서치에 분석에 사용된 원래 데이터를 넣어주기 위해서 데이터프레임을 하나 더 만들어준다.
     cop_df = new_df.copy()  # 깊은 복사.
-    cop_df = pd.concat([cop_df, data['ACCD_ACCEPT_DT']], axis=1)  # 시간이 중요하니까 DT까지 넣어주자.
-    ret_df = pd.DataFrame(columns=['TW_DMG_PORT', 'ASSETS_VAL_6', 'ASSETS_VAL_7', 'ASSETS_VAL_8',
-                                   'ASSETS_VAL_9', 'ASSETS_VAL_10', 'ACCD_ACCEPT_DT'])
+    cop_df = pd.concat([cop_df, data['ACCD_ACCEPT_DT'].head(data_size)], axis=1)  # 시간이 중요하니까 DT까지 넣어주자.
+    ret_df = pd.DataFrame(
+        columns=['TW_DMG_PORT', 'ASSETS_VAL_6', 'ASSETS_VAL_7', 'ASSETS_VAL_8', 'ASSETS_VAL_9', 'ASSETS_VAL_10',
+                 'ACCD_ACCEPT_DT'])
     for idx in range(0, data_size):  # 함수의 요소값은 range 까지.
         str_list = []
         val = new_df.iloc[idx]
+        copiloc_df = cop_df.iloc[[idx]]
         for j in range(0, len(column_list)):
             data_name = column_list[j]
             data_val = val[column_list[j]]
@@ -54,14 +58,15 @@ def makedataset(data_size, new_df):  # 함수화 해서 간편하게 하자. ran
             continue
 
         ret_dataSet.append(str_list)
-        ret_df = pd.concat([ret_df, cop_df.iloc[idx]], ignore_index=True)
+        ret_df = pd.concat([ret_df, copiloc_df], ignore_index=True)
+
     return ret_dataSet, ret_df
 
+dataset, elasticdf = makedataset(MAX_size)
+print(elasticdf)
+# dataset : 상관 분석을 위한 데이터 셋, elasticdf : 엘라스틱서치에 넣기 위한 데이터.
 
 # =============================== 상관관계 분석 적용 ============================
-new_df = makedataframe(MAX_size)
-dataset, elasticdf = makedataset(MAX_size, new_df)
-print(elasticdf)
 te = TransactionEncoder()
 te_result = te.fit(dataset).transform(dataset)
 df = pd.DataFrame(te_result, columns=te.columns_) #위에서 나온걸 데이터프레임으로 변경
