@@ -1,4 +1,4 @@
-import numpy as np
+from prefixspan import PrefixSpan
 import pandas as pd
 import json
 from pandas import json_normalize
@@ -27,4 +27,3 @@ for i in range(0,len(data)):
 inst_nm = new_df[['ATT_INST_NM']]
 print(inst_nm.unique())
 # 기관 이름 추출해 내기.
-

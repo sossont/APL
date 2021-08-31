@@ -1,7 +1,7 @@
-import numpy as np
 import pandas as pd
 import json
 from pandas import json_normalize
+from prefixspan import PrefixSpan
 
 data = pd.read_csv("ts_data_accident-2020_sample.csv", low_memory=False)
 pd.set_option('display.max_columns',None)
@@ -75,3 +75,7 @@ for i in range(0, len(data)):
     prefix_str.append(arr_str)
 
 print(prefix_str)
+
+### prefixspan algorithm 사용
+ps = PrefixSpan(prefix_str)
+print(ps.topk(5,closed=True))   # 상위 5개 출현 빈도.
