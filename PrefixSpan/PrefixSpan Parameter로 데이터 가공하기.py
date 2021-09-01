@@ -78,4 +78,27 @@ print(prefix_str)
 
 ### prefixspan algorithm 사용
 ps = PrefixSpan(prefix_str)
-print(ps.topk(5,closed=True))   # 상위 5개 출현 빈도.
+print(ps.topk(5,closed=True))   # 상위 5개 출현 빈도
+
+### 수정한 코드
+
+prefix_list = []
+for i in range(0,len(data)):
+    ll = []
+    new_str = ' '.join(str(e) for e in prefix_str[i])
+    ll.append(new_str)
+    ll.append(att_type_code[i])
+    prefix_list.append(ll)
+
+ps = PrefixSpan(prefix_list)
+result = ps.topk(5,closed=True)
+answer = []
+for items in result:
+    ans_list = []
+    freq = items[0]
+    str1 = items[1][0]
+    nlist = str1.split(' ')
+    str2 = items[1][1]
+    ans_list.extend((nlist,[str2],freq))
+    answer.append(ans_list)
+print(answer)
