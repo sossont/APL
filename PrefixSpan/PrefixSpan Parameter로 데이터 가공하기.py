@@ -77,9 +77,11 @@ for i in range(0, len(data)):
 print(prefix_str)
 
 ### prefixspan algorithm 사용
+"""
+##  원래 코드 
 ps = PrefixSpan(prefix_str)
 print(ps.topk(5,closed=True))   # 상위 5개 출현 빈도
-
+"""
 ### 수정한 코드
 
 prefix_list = []
